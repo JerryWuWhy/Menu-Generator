@@ -6,10 +6,10 @@ import io
 
 st.set_page_config(page_title="Tasty", layout="wide")
 
-def load_lottieurl(url):
-    r = requests.get(url)
-    return r.json()
-lottie_coding = "https://lottie.host/9e56d4e2-ee08-438e-a959-b76dea4f8e02/pqApA4XkmS.json"
+#def load_lottieurl(url):
+    #r = requests.get(url)
+    #return r.json()
+#lottie_coding = "https://lottie.host/9e56d4e2-ee08-438e-a959-b76dea4f8e02/pqApA4XkmS.json"
 
 with st.container():
     st.markdown('<p style="font-family:Impact ; font-size:60px; color:Cyan;">TASTY</p>', unsafe_allow_html=True)
@@ -44,9 +44,9 @@ with st.container():
             """
         )
     st.markdown("---")
-    with right_column:
-        lottie_animation = load_lottieurl(lottie_coding)
-        st_lottie(lottie_animation, height=300, key="coding")
+    #with right_column:
+        #lottie_animation = load_lottieurl(lottie_coding)
+        #st_lottie(lottie_animation, height=300, key="coding")
 
 def get_scaling_factor(age, gender, job):
     scaling_factor = 1.0
