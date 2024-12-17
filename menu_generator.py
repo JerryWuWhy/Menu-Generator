@@ -1,15 +1,15 @@
 import streamlit as st
 import requests
-#from streamlit_lottie import st_lottie
 from PIL import Image, ImageDraw, ImageFont
 import io
 
-st.set_page_config(page_title="Tasty", layout="wide")
+available_ingredient_options = [
+    "Tomato", "Mozzarella Cheese", "Basil", "Olive Oil", "Chicken Breast",
+    "Garlic", "Butter", "Flour", "Dark Chocolate", "Salmon Fillet", "Broccoli",
+    "Carrot", "Avocado", "Rice", "Pasta", "Parmesan Cheese", "Eggs", "Lemon Juice"
+]
 
-#def load_lottieurl(url):
-    #r = requests.get(url)
-    #return r.json()
-#lottie_coding = "https://lottie.host/9e56d4e2-ee08-438e-a959-b76dea4f8e02/pqApA4XkmS.json"
+st.set_page_config(page_title="Tasty", layout="wide")
 
 with st.container():
     st.markdown('<p style="font-family:Impact ; font-size:60px; color:Cyan;">TASTY</p>', unsafe_allow_html=True)
@@ -44,9 +44,6 @@ with st.container():
             """
         )
     st.markdown("---")
-    #with right_column:
-        #lottie_animation = load_lottieurl(lottie_coding)
-        #st_lottie(lottie_animation, height=300, key="coding")
 
 def get_scaling_factor(age, gender, job):
     scaling_factor = 1.0
@@ -54,17 +51,14 @@ def get_scaling_factor(age, gender, job):
         scaling_factor *= 1.2
     elif gender == "Female":
         scaling_factor *= 0.9
-
     if age < 30:
         scaling_factor *= 1.1
     elif age > 50:
         scaling_factor *= 0.9
-
     if job in ["Engineer", "Doctor"]:
         scaling_factor *= 1.2
     elif job in ["Student", "Designer"]:
         scaling_factor *= 0.8
-
     return scaling_factor
 
 def adjust_ingredient_quantities(ingredients, scaling_factor):
@@ -89,294 +83,388 @@ def adjust_ingredient_quantities(ingredients, scaling_factor):
 def generate_menu(preferences, scaling_factor):
     sample_menu = [
         {
-            "name": "Margherita Pizza",
-            "description": "Classic pizza with tomatoes, mozzarella, and basil",
-            "price": 10.0,
-            "category": "Vegetarian",
-            "ingredients": [
-                {"name": "Pizza dough", "quantity": "250g"},
-                {"name": "Tomato sauce", "quantity": "100g"},
-                {"name": "Mozzarella cheese", "quantity": "150g"},
-                {"name": "Fresh basil leaves", "quantity": "10g"},
-                {"name": "Olive oil", "quantity": "2 tbsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Preheat the oven to 250°C (475°F).",
-                "Roll out the pizza dough and place it on a baking sheet.",
-                "Spread tomato sauce evenly over the dough.",
-                "Sprinkle mozzarella cheese over the sauce.",
-                "Season with salt and black pepper.",
-                "Bake in the preheated oven for about 10-12 minutes, until the cheese is melted and slightly golden.",
-                "Remove from oven, add fresh basil leaves, and lightly brush with olive oil.",
-                "Slice and serve."
-            ]
-        },
-        {
-            "name": "Sushi Roll",
-            "description": "Traditional Japanese sushi with fresh fish and vegetables",
-            "price": 18.0,
-            "category": "Non-Vegetarian",
-            "ingredients": [
-                {"name": "Sushi rice", "quantity": "200g"},
-                {"name": "Nori (seaweed)", "quantity": "2 sheets"},
-                {"name": "Fresh fish (tuna, salmon)", "quantity": "150g"},
-                {"name": "Cucumber", "quantity": "50g"},
-                {"name": "Avocado", "quantity": "50g"},
-                {"name": "Soy sauce", "quantity": "50ml"},
-                {"name": "Wasabi", "quantity": "to taste"},
-                {"name": "Pickled ginger", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Cook the sushi rice according to package instructions and let it cool.",
-                "Lay a sheet of nori on a sushi mat, and spread rice evenly over the nori.",
-                "Place slices of fish, cucumber, and avocado in the center.",
-                "Roll the sushi tightly using the mat and cut into bite-sized pieces.",
-                "Serve with soy sauce, wasabi, and pickled ginger."
-            ]
-        },
-        {
-            "name": "Vegetable Stir-Fry",
-            "description": "Quick stir-fried vegetables with soy sauce and garlic",
-            "price": 9.0,
-            "category": "Vegetarian",
-            "ingredients": [
-                {"name": "Broccoli", "quantity": "150g"},
-                {"name": "Carrots", "quantity": "100g"},
-                {"name": "Bell peppers", "quantity": "100g"},
-                {"name": "Snow peas", "quantity": "50g"},
-                {"name": "Garlic", "quantity": "2 cloves"},
-                {"name": "Soy sauce", "quantity": "30ml"},
-                {"name": "Olive oil", "quantity": "2 tbsp"}
-            ],
-            "steps": [
-                "Heat olive oil in a wok or large pan.",
-                "Add minced garlic and sauté for a minute.",
-                "Add chopped vegetables and stir-fry for 5-7 minutes.",
-                "Pour in soy sauce and cook for another 2 minutes until vegetables are tender.",
-                "Serve over rice or noodles."
-            ]
-        },
-        {
-            "name": "Fish Tacos",
-            "description": "Grilled fish tacos with cabbage slaw and avocado",
-            "price": 14.0,
-            "category": "Non-Vegetarian",
-            "ingredients": [
-                {"name": "White fish (tilapia, cod)", "quantity": "200g"},
-                {"name": "Taco tortillas", "quantity": "4 pieces"},
-                {"name": "Cabbage slaw", "quantity": "100g"},
-                {"name": "Avocado slices", "quantity": "50g"},
-                {"name": "Lime", "quantity": "1 lime"},
-                {"name": "Cilantro", "quantity": "10g"},
-                {"name": "Sour cream", "quantity": "2 tbsp"},
-                {"name": "Salt", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Grill the fish with a pinch of salt and lime juice until cooked through.",
-                "Assemble the tacos with grilled fish, cabbage slaw, avocado slices, and cilantro.",
-                "Top with a dollop of sour cream and serve with lime wedges."
-            ]
-        },
-        {
-            "name": "Mango Sticky Rice",
-            "description": "Traditional Thai dessert with coconut milk and fresh mango",
-            "price": 7.0,
-            "category": "Dessert",
-            "ingredients": [
-                {"name": "Sticky rice", "quantity": "150g"},
-                {"name": "Coconut milk", "quantity": "100ml"},
-                {"name": "Sugar", "quantity": "50g"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Fresh mango slices", "quantity": "100g"}
-            ],
-            "steps": [
-                "Cook the sticky rice according to package instructions.",
-                "In a saucepan, heat coconut milk, sugar, and salt until combined, then pour over the cooked sticky rice.",
-                "Let the rice absorb the coconut milk for 10 minutes.",
-                "Serve with fresh mango slices on the side."
-            ]
-        },
-        {
-            "name": "Caprese Salad",
-            "description": "A simple salad with fresh mozzarella, tomatoes, and basil.",
-            "price": 8.0,
-            "category": "Salad",
-            "ingredients": [
-                {"name": "Fresh mozzarella", "quantity": "150g"},
-                {"name": "Tomatoes", "quantity": "150g"},
-                {"name": "Fresh basil leaves", "quantity": "10g"},
-                {"name": "Olive oil", "quantity": "2 tbsp"},
-                {"name": "Balsamic glaze", "quantity": "1 tbsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Slice the mozzarella and tomatoes into even slices.",
-                "Arrange them alternately on a serving plate with basil leaves.",
-                "Drizzle olive oil and balsamic glaze over the salad.",
-                "Season with salt and black pepper.",
-                "Serve immediately."
-            ]
-        },
+        "name": "Paneer Tikka",
+        "description": "Grilled paneer marinated with spices and yogurt.",
+        "price": 12.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Paneer", "quantity": "200g"},
+            {"name": "Yogurt", "quantity": "50g"},
+            {"name": "Lemon juice", "quantity": "1 tbsp"},
+            {"name": "Ginger-garlic paste", "quantity": "1 tbsp"},
+            {"name": "Spices (cumin, paprika)", "quantity": "1 tsp each"},
+            {"name": "Salt", "quantity": "to taste"}
+        ],
+        "steps": [
+            "Marinate paneer with yogurt, lemon juice, spices, and ginger-garlic paste for 30 minutes.",
+            "Grill on skewers until golden brown.",
+            "Serve with mint chutney."
+        ]
+    },
+    {
+        "name": "Vegetable Lasagna",
+        "description": "Layered pasta with vegetables, ricotta, and marinara sauce.",
+        "price": 13.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Lasagna sheets", "quantity": "4"},
+            {"name": "Ricotta cheese", "quantity": "150g"},
+            {"name": "Spinach", "quantity": "100g"},
+            {"name": "Bell peppers", "quantity": "50g"},
+            {"name": "Marinara sauce", "quantity": "150ml"},
+            {"name": "Mozzarella cheese", "quantity": "100g"}
+        ],
+        "steps": [
+            "Layer cooked lasagna sheets, ricotta, spinach, vegetables, and marinara sauce.",
+            "Repeat layers and top with mozzarella cheese.",
+            "Bake at 180°C for 25 minutes and serve."
+        ]
+    },
 
-        # Non-Vegetarian Options
-        {
-            "name": "Grilled Chicken Breast",
-            "description": "Perfectly grilled chicken served with a side of roasted vegetables.",
-            "price": 15.0,
-            "category": "Non-Vegetarian",
-            "ingredients": [
-                {"name": "Chicken breast", "quantity": "200g"},
-                {"name": "Olive oil", "quantity": "2 tbsp"},
-                {"name": "Lemon juice", "quantity": "1 tbsp"},
-                {"name": "Garlic", "quantity": "2 cloves"},
-                {"name": "Thyme", "quantity": "1 tsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Marinate the chicken breast with olive oil, lemon juice, garlic, thyme, salt, and pepper for at least 30 minutes.",
-                "Preheat the grill to medium-high heat.",
-                "Grill the chicken for about 6-8 minutes on each side until fully cooked.",
-                "Serve hot with roasted vegetables or a salad."
-            ]
-        },
-        {
-            "name": "Butter Chicken",
-            "description": "A creamy, mildly spiced chicken curry with a rich tomato base.",
-            "price": 18.0,
-            "category": "Non-Vegetarian",
-            "ingredients": [
-                {"name": "Chicken (boneless)", "quantity": "250g"},
-                {"name": "Tomatoes", "quantity": "200g"},
-                {"name": "Cream", "quantity": "100ml"},
-                {"name": "Butter", "quantity": "50g"},
-                {"name": "Garlic", "quantity": "2 cloves"},
-                {"name": "Ginger", "quantity": "1 inch"},
-                {"name": "Garam masala", "quantity": "1 tsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Cilantro", "quantity": "for garnish"}
-            ],
-            "steps": [
-                "Heat butter in a pan and sauté garlic and ginger.",
-                "Add tomatoes and cook until soft. Blend into a smooth puree.",
-                "Add chicken, cream, garam masala, and salt. Simmer until chicken is cooked through.",
-                "Garnish with cilantro and serve with naan or rice."
-            ]
-        },
-        {
-            "name": "Chocolate Fondant",
-            "description": "Warm chocolate cake with a gooey center.",
-            "price": 10.0,
-            "category": "Dessert",
-            "ingredients": [
-                {"name": "Dark chocolate", "quantity": "150g"},
-                {"name": "Butter", "quantity": "100g"},
-                {"name": "Sugar", "quantity": "100g"},
-                {"name": "Eggs", "quantity": "3"},
-                {"name": "Flour", "quantity": "50g"}
-            ],
-            "steps": [
-                "Melt chocolate and butter together.",
-                "Whisk eggs and sugar until fluffy, then mix in the chocolate-butter mixture.",
-                "Fold in the flour gently.",
-                "Pour into ramekins and bake at 200°C (400°F) for 12 minutes.",
-                "Serve immediately with vanilla ice cream."
-            ]
-        },
-    
-        {
-            "name": "Bruschetta",
-            "description": "Toasted baguette slices topped with fresh tomatoes, garlic, basil, and olive oil.",
-            "price": 5.0,
-            "category": "Appetizer",
-            "ingredients": [
-                {"name": "Baguette", "quantity": "1 (sliced into rounds)"},
-                {"name": "Tomatoes", "quantity": "150g (diced)"},
-                {"name": "Garlic", "quantity": "1 clove (minced)"},
-                {"name": "Fresh basil", "quantity": "5g"},
-                {"name": "Olive oil", "quantity": "2 tbsp"},
-                {"name": "Balsamic vinegar", "quantity": "1 tsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Toast baguette slices in the oven until golden brown.",
-                "Mix diced tomatoes, garlic, basil, olive oil, and balsamic vinegar in a bowl.",
-                "Season with salt and pepper.",
-                "Spoon the mixture onto the toasted baguette slices.",
-                "Serve immediately."
-            ]
-        },
-        {
-            "name": "Stuffed Mushroom Caps",
-            "description": "Bite-sized mushrooms filled with a cheesy garlic and herb stuffing.",
-            "price": 7.0,
-            "category": "Appetizer",
-            "ingredients": [
-                {"name": "Button mushrooms", "quantity": "12 (stems removed)"},
-                {"name": "Cream cheese", "quantity": "100g"},
-                {"name": "Parmesan cheese", "quantity": "50g (grated)"},
-                {"name": "Garlic", "quantity": "1 clove (minced)"},
-                {"name": "Parsley", "quantity": "5g (chopped)"},
-                {"name": "Olive oil", "quantity": "1 tbsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Preheat the oven to 200°C (400°F).",
-                "Mix cream cheese, Parmesan, garlic, and parsley in a bowl. Season with salt and pepper.",
-                "Stuff each mushroom cap with the cheese mixture.",
-                "Arrange the mushrooms on a baking tray, drizzle with olive oil.",
-                "Bake for 15 minutes until the mushrooms are tender and the tops are golden.",
-                "Serve warm."
-            ]
-        },
-        {
-            "name": "Zucchini Noodles with Pesto",
-            "description": "Fresh zucchini noodles tossed in a vibrant basil pesto sauce.",
-            "price": 9.0,
-            "category": "Gluten-Free",
-            "ingredients": [
-                {"name": "Zucchini", "quantity": "2 medium (spiralized)"},
-                {"name": "Fresh basil leaves", "quantity": "50g"},
-                {"name": "Garlic", "quantity": "1 clove"},
-                {"name": "Pine nuts", "quantity": "30g"},
-                {"name": "Parmesan cheese", "quantity": "30g"},
-                {"name": "Olive oil", "quantity": "3 tbsp"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Blend basil, garlic, pine nuts, Parmesan, olive oil, salt, and pepper to make pesto.",
-                "Toss the spiralized zucchini noodles in the pesto sauce.",
-                "Serve immediately, garnished with extra Parmesan and pine nuts."
-            ]
-        },
-        {
-            "name": "Grilled Lemon Herb Salmon",
-            "description": "Succulent salmon fillet grilled with a zesty lemon herb marinade.",
-            "price": 15.0,
-            "category": "Gluten-Free",
-            "ingredients": [
-                {"name": "Salmon fillet", "quantity": "200g"},
-                {"name": "Olive oil", "quantity": "2 tbsp"},
-                {"name": "Lemon juice", "quantity": "1 tbsp"},
-                {"name": "Garlic", "quantity": "1 clove (minced)"},
-                {"name": "Fresh dill", "quantity": "5g (chopped)"},
-                {"name": "Salt", "quantity": "to taste"},
-                {"name": "Black pepper", "quantity": "to taste"}
-            ],
-            "steps": [
-                "Preheat the grill to medium heat.",
-                "Marinate the salmon with olive oil, lemon juice, garlic, dill, salt, and pepper for 15 minutes.",
-                "Grill the salmon for 4-5 minutes on each side, until flaky and cooked through.",
-                "Serve with a side of steamed vegetables or salad."
-            ]
-        }
+    # Non-Vegetarian
+    {
+        "name": "Lamb Biryani",
+        "description": "Fragrant basmati rice cooked with marinated lamb and spices.",
+        "price": 20.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Lamb", "quantity": "300g"},
+            {"name": "Basmati rice", "quantity": "200g"},
+            {"name": "Yogurt", "quantity": "50g"},
+            {"name": "Onions", "quantity": "2 (sliced)"},
+            {"name": "Ginger-garlic paste", "quantity": "1 tbsp"},
+            {"name": "Spices (cardamom, cloves, cinnamon)", "quantity": "2 tsp"}
+        ],
+        "steps": [
+            "Marinate lamb with yogurt, spices, and ginger-garlic paste for 1 hour.",
+            "Cook onions, add marinated lamb, and layer with partially cooked rice.",
+            "Steam cook for 20 minutes and serve."
+        ]
+    },
+    {
+        "name": "Shrimp Scampi",
+        "description": "Juicy shrimp sautéed in garlic butter and white wine sauce.",
+        "price": 18.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Shrimp", "quantity": "200g"},
+            {"name": "Garlic", "quantity": "3 cloves (minced)"},
+            {"name": "Butter", "quantity": "3 tbsp"},
+            {"name": "White wine", "quantity": "50ml"},
+            {"name": "Lemon juice", "quantity": "1 tbsp"},
+            {"name": "Parsley", "quantity": "5g"}
+        ],
+        "steps": [
+            "Melt butter and sauté garlic.",
+            "Add shrimp, white wine, and lemon juice. Cook until shrimp is pink.",
+            "Garnish with parsley and serve with bread or pasta."
+        ]
+    },
 
+    # Salad
+    {
+        "name": "Greek Salad",
+        "description": "A refreshing salad with cucumbers, tomatoes, feta cheese, and olives.",
+        "price": 9.0,
+        "category": "Salad",
+        "ingredients": [
+            {"name": "Cucumber", "quantity": "100g"},
+            {"name": "Tomatoes", "quantity": "100g"},
+            {"name": "Feta cheese", "quantity": "50g"},
+            {"name": "Kalamata olives", "quantity": "30g"},
+            {"name": "Olive oil", "quantity": "2 tbsp"},
+            {"name": "Oregano", "quantity": "1 tsp"}
+        ],
+        "steps": [
+            "Chop cucumbers and tomatoes into cubes.",
+            "Combine with feta cheese and olives.",
+            "Drizzle with olive oil and sprinkle with oregano."
+        ]
+    },
+
+    # Dessert
+    {
+        "name": "Panna Cotta",
+        "description": "Creamy Italian dessert served with berry compote.",
+        "price": 8.0,
+        "category": "Dessert",
+        "ingredients": [
+            {"name": "Heavy cream", "quantity": "200ml"},
+            {"name": "Sugar", "quantity": "50g"},
+            {"name": "Vanilla extract", "quantity": "1 tsp"},
+            {"name": "Gelatin", "quantity": "1 tsp"},
+            {"name": "Berry compote", "quantity": "50ml"}
+        ],
+        "steps": [
+            "Heat cream, sugar, and vanilla extract until sugar dissolves.",
+            "Add gelatin and mix until dissolved.",
+            "Pour into molds and refrigerate for 4 hours.",
+            "Serve with berry compote."
+        ]
+    },
+
+    # Soup
+    {
+        "name": "Tom Yum Soup",
+        "description": "Spicy and sour Thai soup with shrimp and mushrooms.",
+        "price": 10.0,
+        "category": "Soup",
+        "ingredients": [
+            {"name": "Shrimp", "quantity": "100g"},
+            {"name": "Mushrooms", "quantity": "50g"},
+            {"name": "Lemongrass", "quantity": "1 stalk"},
+            {"name": "Kaffir lime leaves", "quantity": "2 leaves"},
+            {"name": "Chili paste", "quantity": "1 tbsp"},
+            {"name": "Fish sauce", "quantity": "1 tbsp"},
+            {"name": "Lime juice", "quantity": "1 tbsp"}
+        ],
+        "steps": [
+            "Boil water with lemongrass and kaffir lime leaves.",
+            "Add mushrooms, shrimp, chili paste, fish sauce, and lime juice.",
+            "Simmer for 5 minutes and serve hot."
+        ]
+    },
+
+    # Appetizer
+    {
+        "name": "Chicken Satay",
+        "description": "Grilled chicken skewers served with peanut sauce.",
+        "price": 7.0,
+        "category": "Appetizer",
+        "ingredients": [
+            {"name": "Chicken strips", "quantity": "200g"},
+            {"name": "Coconut milk", "quantity": "50ml"},
+            {"name": "Soy sauce", "quantity": "1 tbsp"},
+            {"name": "Peanut butter", "quantity": "3 tbsp"},
+            {"name": "Lime juice", "quantity": "1 tbsp"},
+            {"name": "Curry powder", "quantity": "1 tsp"}
+        ],
+        "steps": [
+            "Marinate chicken strips with coconut milk, soy sauce, and curry powder.",
+            "Grill on skewers until cooked through.",
+            "Serve with peanut sauce."
+        ]
+    },
+
+    # Gluten-Free
+    {
+        "name": "Quinoa Salad",
+        "description": "A healthy salad with quinoa, cherry tomatoes, cucumber, and feta.",
+        "price": 10.0,
+        "category": "Gluten-Free",
+        "ingredients": [
+            {"name": "Quinoa", "quantity": "150g"},
+            {"name": "Cherry tomatoes", "quantity": "100g"},
+            {"name": "Cucumber", "quantity": "100g"},
+            {"name": "Feta cheese", "quantity": "50g"},
+            {"name": "Olive oil", "quantity": "2 tbsp"},
+            {"name": "Lemon juice", "quantity": "1 tbsp"}
+        ],
+        "steps": [
+            "Cook quinoa and let it cool.",
+            "Mix quinoa, chopped vegetables, and feta.",
+            "Drizzle with olive oil and lemon juice before serving."
+        ]
+    },
+    {
+        "name": "Baked Salmon with Asparagus",
+        "description": "Oven-baked salmon paired with roasted asparagus.",
+        "price": 15.0,
+        "category": "Gluten-Free",
+        "ingredients": [
+            {"name": "Salmon fillet", "quantity": "200g"},
+            {"name": "Asparagus", "quantity": "100g"},
+            {"name": "Olive oil", "quantity": "2 tbsp"},
+            {"name": "Lemon juice", "quantity": "1 tbsp"},
+            {"name": "Garlic", "quantity": "1 clove"}
+        ],
+        "steps": [
+            "Place salmon and asparagus on a baking tray.",
+            "Drizzle with olive oil, garlic, and lemon juice.",
+            "Bake at 200°C for 15-20 minutes and serve hot."
+        ]
+    },
+    {
+        "name": "Beef Stroganoff",
+        "description": "Creamy beef sautéed with mushrooms and served over pasta.",
+        "price": 16.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Beef strips", "quantity": "200g"},
+            {"name": "Mushrooms", "quantity": "100g"},
+            {"name": "Sour cream", "quantity": "50ml"},
+            {"name": "Onion", "quantity": "1 (chopped)"},
+            {"name": "Beef broth", "quantity": "100ml"},
+            {"name": "Pasta", "quantity": "100g"}
+        ],
+        "steps": [
+            "Sauté onions and beef strips in a pan until browned.",
+            "Add mushrooms and beef broth, simmering until tender.",
+            "Stir in sour cream, mix, and serve over cooked pasta."
+        ]
+    },
+    {
+        "name": "Ratatouille",
+        "description": "A vibrant French vegetable stew with zucchini, tomatoes, and eggplant.",
+        "price": 12.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Zucchini", "quantity": "100g"},
+            {"name": "Tomatoes", "quantity": "150g"},
+            {"name": "Eggplant", "quantity": "100g"},
+            {"name": "Bell peppers", "quantity": "50g"},
+            {"name": "Olive oil", "quantity": "2 tbsp"},
+            {"name": "Herbs de Provence", "quantity": "1 tsp"}
+        ],
+        "steps": [
+            "Slice zucchini, tomatoes, eggplant, and bell peppers.",
+            "Layer in a baking dish, drizzle with olive oil, and season with herbs.",
+            "Bake at 180°C for 40 minutes until tender."
+        ]
+    },
+    {
+        "name": "Chicken Caesar Salad",
+        "description": "Grilled chicken served over crisp romaine with Caesar dressing.",
+        "price": 11.0,
+        "category": "Salad",
+        "ingredients": [
+            {"name": "Chicken breast", "quantity": "150g"},
+            {"name": "Romaine lettuce", "quantity": "100g"},
+            {"name": "Caesar dressing", "quantity": "2 tbsp"},
+            {"name": "Parmesan cheese", "quantity": "30g"},
+            {"name": "Croutons", "quantity": "50g"}
+        ],
+        "steps": [
+            "Grill chicken breast and slice into strips.",
+            "Toss romaine lettuce with Caesar dressing and croutons.",
+            "Top with grilled chicken and grated Parmesan cheese."
+        ]
+    },
+    {
+        "name": "Spaghetti Carbonara",
+        "description": "Classic Italian pasta with bacon, eggs, and Parmesan cheese.",
+        "price": 14.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Spaghetti", "quantity": "150g"},
+            {"name": "Bacon", "quantity": "100g"},
+            {"name": "Eggs", "quantity": "2"},
+            {"name": "Parmesan cheese", "quantity": "50g"},
+            {"name": "Black pepper", "quantity": "1 tsp"}
+        ],
+        "steps": [
+            "Cook spaghetti and reserve pasta water.",
+            "Fry bacon until crispy, then mix with spaghetti.",
+            "Stir in beaten eggs and Parmesan cheese over low heat until creamy."
+        ]
+    },
+    {
+        "name": "Vegetable Stir Fry",
+        "description": "Quick and healthy stir-fried vegetables with soy sauce.",
+        "price": 10.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Broccoli", "quantity": "100g"},
+            {"name": "Carrots", "quantity": "100g"},
+            {"name": "Bell peppers", "quantity": "50g"},
+            {"name": "Soy sauce", "quantity": "2 tbsp"},
+            {"name": "Garlic", "quantity": "2 cloves (minced)"}
+        ],
+        "steps": [
+            "Chop vegetables into bite-sized pieces.",
+            "Stir fry garlic and vegetables in a wok with soy sauce.",
+            "Serve hot with rice or noodles."
+        ]
+    },
+    {
+        "name": "Butter Chicken",
+        "description": "Indian-style chicken cooked in a creamy tomato-based sauce.",
+        "price": 17.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Chicken breast", "quantity": "200g"},
+            {"name": "Tomato puree", "quantity": "100g"},
+            {"name": "Heavy cream", "quantity": "50ml"},
+            {"name": "Butter", "quantity": "30g"},
+            {"name": "Spices (garam masala, cumin)", "quantity": "1 tsp each"}
+        ],
+        "steps": [
+            "Marinate chicken with spices and yogurt.",
+            "Cook marinated chicken in butter until tender.",
+            "Add tomato puree and heavy cream, simmer until creamy."
+        ]
+    },
+    {
+        "name": "Mushroom Risotto",
+        "description": "Creamy risotto cooked with fresh mushrooms and Parmesan.",
+        "price": 13.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Arborio rice", "quantity": "150g"},
+            {"name": "Mushrooms", "quantity": "100g"},
+            {"name": "Vegetable broth", "quantity": "300ml"},
+            {"name": "Parmesan cheese", "quantity": "50g"},
+            {"name": "Onion", "quantity": "1 (chopped)"}
+        ],
+        "steps": [
+            "Sauté onions and mushrooms until soft.",
+            "Add Arborio rice and gradually add vegetable broth while stirring.",
+            "Finish with Parmesan cheese for a creamy texture."
+        ]
+    },
+    {
+        "name": "BBQ Ribs",
+        "description": "Tender pork ribs slathered with smoky barbecue sauce.",
+        "price": 19.0,
+        "category": "Non-Vegetarian",
+        "ingredients": [
+            {"name": "Pork ribs", "quantity": "300g"},
+            {"name": "BBQ sauce", "quantity": "100ml"},
+            {"name": "Honey", "quantity": "2 tbsp"},
+            {"name": "Garlic powder", "quantity": "1 tsp"}
+        ],
+        "steps": [
+            "Marinate pork ribs with BBQ sauce, honey, and garlic powder.",
+            "Bake at 180°C for 45 minutes, basting with BBQ sauce.",
+            "Serve with coleslaw or cornbread."
+        ]
+    },
+    {
+        "name": "Falafel Wrap",
+        "description": "Crunchy falafels wrapped in pita bread with hummus and veggies.",
+        "price": 9.0,
+        "category": "Vegetarian",
+        "ingredients": [
+            {"name": "Falafel", "quantity": "4 pieces"},
+            {"name": "Pita bread", "quantity": "1"},
+            {"name": "Hummus", "quantity": "2 tbsp"},
+            {"name": "Cucumber", "quantity": "50g"},
+            {"name": "Tomato", "quantity": "50g"}
+        ],
+        "steps": [
+            "Spread hummus on pita bread.",
+            "Add falafels, sliced cucumber, and tomato.",
+            "Wrap tightly and serve."
+        ]
+    },
+    {
+        "name": "Tiramisu",
+        "description": "Classic Italian dessert made with espresso-soaked ladyfingers and mascarpone.",
+        "price": 9.0,
+        "category": "Dessert",
+        "ingredients": [
+            {"name": "Ladyfingers", "quantity": "6 pieces"},
+            {"name": "Mascarpone cheese", "quantity": "100g"},
+            {"name": "Espresso", "quantity": "50ml"},
+            {"name": "Cocoa powder", "quantity": "1 tsp"},
+            {"name": "Sugar", "quantity": "30g"}
+        ],
+        "steps": [
+            "Soak ladyfingers in espresso.",
+            "Layer mascarpone mixture over soaked ladyfingers.",
+            "Dust with cocoa powder and refrigerate for 2 hours before serving."
+        ]
+    }
     ]
     filtered_menu = [item for item in sample_menu if item['category'] in preferences]
     for item in filtered_menu:
@@ -443,32 +531,61 @@ def create_menu_image(menu_items):
 
 def page_2():
     st.title("Select Ingredients You Already Have")
-    ingredient_name = st.text_input("Ingredient Name")
-    quantity = st.number_input("Quantity (grams/ml)", min_value=0.0, step=1.0)
-    
+
+    # Session state initialization for ingredients
+    if "available_ingredients" not in st.session_state:
+        st.session_state.available_ingredients = {}
+
+    # Dropdown list for ingredient selection
+    ingredient_name = st.selectbox("Select an Ingredient", available_ingredient_options)
+
+    # Quantity input
+    quantity = st.number_input("Enter Quantity (grams/ml)", min_value=0.0, step=1.0)
+
+    # Add selected ingredient and quantity
     if st.button("Add Ingredient"):
         if ingredient_name and quantity:
             st.session_state.available_ingredients[ingredient_name] = quantity
             st.success(f"Added {ingredient_name} ({quantity}g/ml) to your list.")
+        else:
+            st.warning("Please select an ingredient and enter a valid quantity.")
 
+    # Display current ingredients
     st.write("### Your Ingredients")
     if st.session_state.available_ingredients:
         for name, qty in st.session_state.available_ingredients.items():
             st.write(f"- {name}: {qty}g/ml")
+    else:
+        st.info("No ingredients added yet.")
 
+    # Generate menu button
     if st.button("Generate Menu"):
-        st.session_state.generated_menu = generate_menu(st.session_state.preferences, st.session_state.scaling_factor)
-        st.session_state.generated_menu = subtract_ingredients(st.session_state.generated_menu, st.session_state.available_ingredients)
-        
+        st.session_state.generated_menu = generate_menu(
+            st.session_state.preferences,
+            st.session_state.scaling_factor
+        )
+        st.session_state.generated_menu = subtract_ingredients(
+            st.session_state.generated_menu,
+            st.session_state.available_ingredients
+        )
         menu_items = st.session_state.generated_menu
+
+        # Display each menu item with its details
         for item in menu_items:
-            st.markdown(f"**{item['name']}** - ${item['price']:.2f}")
-            st.write(f"Description: {item['description']}")
-            st.write("Ingredients:")
+            st.markdown(f"## {item['name']} - ${item['price']:.2f}")
+            st.write(f"**Description:** {item['description']}")
+            st.write("**Ingredients:**")
             for ingredient in item["ingredients"]:
                 st.write(f"- {ingredient['name']} ({ingredient['quantity']})")
+
+            # Add cooking steps here
+            st.write("**Steps:**")
+            for idx, step in enumerate(item['steps'], start=1):
+                st.write(f"{idx}. {step}")
+
             st.write("---")
 
+        # Generate and download menu image
         img = create_menu_image(menu_items)
         buffer = io.BytesIO()
         img.save(buffer, format="JPEG")
@@ -479,49 +596,41 @@ def page_2():
             file_name="generated_menu.jpg",
             mime="image/jpeg"
         )
+
+    # "Try Again" button to go back
     def go_back_page_4():
         st.session_state.page = 4
-
     st.button("Try Again", on_click=go_back_page_4)
-        
+
 def page_a():
     st.title("Welcome to Tasty!")
     st.write("Start by selecting your gender.")
     st.session_state.gender = st.radio("Select your gender:", ["Male", "Female", "Other"])
-
     def go_to_page_2():
         st.session_state.page = 2
-
     st.button("Next", on_click=go_to_page_2)
 
 def page_b():
     st.title("Step 2: Age Selection")
     st.write("Select your age range.")
     st.session_state.age = st.slider("Age:", 18, 100, 25)
-
     def go_to_page_3():
         st.session_state.page = 3
-
     st.button("Next!", on_click=go_to_page_3)
 
 def page_c():
     st.title("Step 3: Job Selection")
     st.write("Tell us about your job.")
     st.session_state.job = st.selectbox("Select your job:", ["Student", "Engineer", "Designer", "Doctor", "Other"])
-
-    
     def go_to_page_4():
         st.session_state.page = 4
-
     st.button("Next!!", on_click=go_to_page_4)
     
-
 def summary_page():
     st.title("Summary of Inputs")
     st.write(f"**Gender:** {st.session_state.gender}")
     st.write(f"**Age:** {st.session_state.age}")
     st.write(f"**Job:** {st.session_state.job}")
-
     scaling_factor = get_scaling_factor(
     st.session_state.age, st.session_state.gender, st.session_state.job
 )
@@ -538,7 +647,6 @@ def summary_page():
             "Gluten-Free"
     ]
 )
-
     def go_to_page_5():
         st.session_state.page = 5
         st.session_state.preferences = preferences
@@ -565,4 +673,3 @@ if st.button("Submit"):
         st.success(f"Thank you! We will contact you at {email}.")
     else:
         st.error("Please enter a valid email address.")
-# Run the Streamlit: source ~/.bash_profile
