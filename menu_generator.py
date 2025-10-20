@@ -80,14 +80,14 @@ def adjust_ingredient_quantities(ingredients, scaling_factor):
             adjusted_ingredients.append(ingredient)
     return adjusted_ingredients
 
-def generate_menu(preferences, scaling_factor):
+def generate_menu(preferences, scaling_factor):#menu data base example
     sample_menu = [
         {
-        "name": "Paneer Tikka",
-        "description": "Grilled paneer marinated with spices and yogurt.",
-        "price": 12.0,
-        "category": "Vegetarian",
-        "ingredients": [
+        "name": "Paneer Tikka",#dish name
+        "description": "Grilled paneer marinated with spices and yogurt.",#what is the dish like
+        "price": 12.0,#estimated price to make
+        "category": "Vegetarian",#sub category of dish, linking to perference
+        "ingredients": [#materials required to make
             {"name": "Paneer", "quantity": "200g"},
             {"name": "Yogurt", "quantity": "50g"},
             {"name": "Lemon juice", "quantity": "1 tbsp"},
@@ -95,7 +95,7 @@ def generate_menu(preferences, scaling_factor):
             {"name": "Spices (cumin, paprika)", "quantity": "1 tsp each"},
             {"name": "Salt", "quantity": "to taste"}
         ],
-        "steps": [
+        "steps": [#steps of how this dish can be made at home
             "Marinate paneer with yogurt, lemon juice, spices, and ginger-garlic paste for 30 minutes.",
             "Grill on skewers until golden brown.",
             "Serve with mint chutney."
